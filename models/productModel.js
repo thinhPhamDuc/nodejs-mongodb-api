@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 
+const productVariantModel = require('./productVariantModel').schema
 const productSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, "Please enter a product name"]
+            required: [true, "Please enter a product name"],
+            unique: true
         },
         quantity: {
             type: Number,
@@ -18,7 +20,8 @@ const productSchema = mongoose.Schema(
         image: {
             type: String,
             required: false,
-        }
+        },
+        variants: [productVariantModel]
     },
     {
         timestamps: true
