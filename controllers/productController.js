@@ -1,6 +1,23 @@
 const Product = require('../models/productModel')
 const asyncHandler = require('express-async-handler')
-
+const multer = require("multer")
+const { GridFsStorage } = require("multer-gridfs-storage")
+const url = process.env.MONOGO_URL
+// upload image 
+const storage = new GridFsStorage({
+    url,
+    file: (req, file) => {
+        if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+            return {
+                bucketName: "photos",
+                filename: `${Date.now()}_${file.originalname}`,
+            };
+        } else {
+            return `${Date.now()}_${file.originalname}`;
+        }
+    },
+});
+const upload = multer({ storage });
 
 // get all products
 const getProducts = asyncHandler(async (req, res) => {
@@ -69,10 +86,29 @@ const insertProduct = asyncHandler(async (req, res) => {
     }
 })
 
+
+
+const uploadImage = asyncHandler(async (req, res) => {
+    upload.single("avatar")(req, res, async (err) => {
+        if (err) {
+            res.status(500);
+            throw new Error(err.message);
+        }
+        const file = req.file;
+        res.send({
+            message: "Uploaded",
+            id: file.id,
+            name: file.filename,
+            contentType: file.contentType,
+        });
+    });
+});
+
 module.exports = {
     getProducts,
     getProductById,
     updateProduct,
     deleteProduct,
-    insertProduct
+    insertProduct,
+    uploadImage,
 }

@@ -3,16 +3,18 @@ const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
 const productRoutes = require('./routes/productRoute')
+const userRoutes = require('./routes/userRoute')
 const errorMiddleware = require('./middleware/errorMiddleware')
+const authenticateToken = require('./middleware/authMiddleware')
 const cors = require('cors')
 const MONOGO_URL = process.env.MONOGO_URL
 app.use(express.json())
 app.use(cors())
 //router
-app.use ('/api/product',productRoutes)
+app.use('/api/admin', userRoutes)
+app.use('/api/admin/product', authenticateToken, productRoutes);
 
 app.get('/', (req, res) => {
-    // throw new Error('fake error')
     res.send('Welcome node api')
 })
 
