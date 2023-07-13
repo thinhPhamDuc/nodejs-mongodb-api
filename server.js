@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cors())
 //router
 app.use('/api/admin', userRoutes)
-app.use('/api/admin/product',  productRoutes);
+app.use('/api/admin/product', authenticateToken, productRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome node api')
