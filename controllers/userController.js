@@ -26,15 +26,13 @@ const register = asyncHandler(async (req, res) => {
 })
 
 const login = asyncHandler(async (req, res) => {
-    // Check if this user already exisits
     try {
-        // check if the user exists
         const user = await User.findOne({ name: req.body.name });
         if (user) {
             bcrypt.compare(req.body.password, user.password, function (error, response) {
               if (response) {
                 // Create a JWT token with the user's ID as the payload
-                const token = jwt.sign({ userId: user._id }, 'yourSecretKey');
+                const token = jwt.sign({ userId: user._id }, 'yourSecretKey', {expiresIn: '24h'});
       
                 // Send the token as the response
                 res.status(200).json({ token });

@@ -10,7 +10,7 @@ const authenticateToken = (req, res, next) => {
 
     jwt.verify(token, 'yourSecretKey', (err, user) => {
         if (err) {
-            return res.sendStatus(403);
+            return res.status(403).send('Token is expired');
         }
 
         req.user = user;

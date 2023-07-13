@@ -1,4 +1,5 @@
 const Product = require('../models/productModel')
+const FileChunks = require('../models/imageChunkModel')
 const asyncHandler = require('express-async-handler')
 const multer = require("multer")
 const { GridFsStorage } = require("multer-gridfs-storage")
@@ -104,6 +105,43 @@ const uploadImage = asyncHandler(async (req, res) => {
     });
 });
 
+const ObjectID = require('mongodb').ObjectId;
+
+const getImage = asyncHandler(async (req, res) => {
+    try {
+      const fileId = req.params.id;
+      const fileChunksArray = await FileChunks.find({ files_id: new ObjectID(fileId) });
+  
+      if (!fileChunksArray || fileChunksArray.length === 0) {
+        return res.status(404).json({ message: 'Image not found' });
+      }
+  
+      const chunks = [];
+      fileChunksArray.forEach((chunk) => {
+        if (chunk.data) {
+          chunks.push(chunk.data);
+        }
+      });
+  
+      if (chunks.length === 0) {
+        return res.status(404).json({ message: 'Base64 data not found' });
+      }
+  
+      const buffer = Buffer.concat(chunks);
+      const base64Data = buffer.toString('base64');
+  
+      const image = {
+        id: fileId,
+        data: base64Data,
+      };
+  
+      res.status(200).json(image);
+    } catch (error) {
+      res.status(500);
+      throw new Error(error.message);
+    }
+});
+
 module.exports = {
     getProducts,
     getProductById,
@@ -111,4 +149,5 @@ module.exports = {
     deleteProduct,
     insertProduct,
     uploadImage,
+    getImage,
 }

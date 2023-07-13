@@ -1,6 +1,6 @@
 const express = require('express');
 const Product = require('../models/productModel')
-const {getProducts , getProductById, updateProduct , deleteProduct, insertProduct, uploadImage,dowloadImage} = require('../controllers/productController');
+const {getProducts , getProductById, updateProduct , deleteProduct, insertProduct, uploadImage,getImage} = require('../controllers/productController');
 const router = express.Router();
 
 // save data to server
@@ -21,4 +21,6 @@ router.delete('/:id', deleteProduct)
 
 //upload image
 router.post('/upload', uploadImage)
+router.get('/image/:id', getImage)
+
 module.exports = router
