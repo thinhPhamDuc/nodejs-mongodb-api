@@ -5,6 +5,7 @@ const app = express()
 const productRoutes = require('./routes/productRoute')
 const userRoutes = require('./routes/userRoute')
 const clientRoutes = require('./routes/clientRoute')
+const checkoutRoutes = require('./routes/checkoutRoute')
 const errorMiddleware = require('./middleware/errorMiddleware')
 const authenticateToken = require('./middleware/authMiddleware')
 const cors = require('cors')
@@ -14,6 +15,7 @@ app.use(cors())
 //router
 //user routes
 app.use('/api', clientRoutes)
+app.use('/api', authenticateToken ,checkoutRoutes)
 
 //admin routes
 app.use('/api/admin', userRoutes)

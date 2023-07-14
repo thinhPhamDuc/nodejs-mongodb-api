@@ -23,7 +23,13 @@ const upload = multer({ storage });
 // get all products
 const getProducts = asyncHandler(async (req, res) => {
     try {
-        const product = await Product.find({})
+        const pageOptions = {
+            page: parseInt(req.query.page, 10) || 0,
+            limit: parseInt(req.query.limit, 10) || 10
+        }
+        const product = await Product.find()
+            .skip(pageOptions.page * pageOptions.limit)
+            .limit(pageOptions.limit)
         res.status(200).json(product)
     } catch (error) {
         res.status(500)
