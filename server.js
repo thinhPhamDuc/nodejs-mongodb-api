@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const app = express()
 const productRoutes = require('./routes/productRoute')
 const userRoutes = require('./routes/userRoute')
+const clientRoutes = require('./routes/clientRoute')
 const errorMiddleware = require('./middleware/errorMiddleware')
 const authenticateToken = require('./middleware/authMiddleware')
 const cors = require('cors')
@@ -11,6 +12,10 @@ const MONOGO_URL = process.env.MONOGO_URL
 app.use(express.json())
 app.use(cors())
 //router
+//user routes
+app.use('/api', clientRoutes)
+
+//admin routes
 app.use('/api/admin', userRoutes)
 app.use('/api/admin/product', authenticateToken, productRoutes);
 

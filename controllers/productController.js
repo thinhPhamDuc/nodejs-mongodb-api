@@ -87,8 +87,100 @@ const insertProduct = asyncHandler(async (req, res) => {
     }
 })
 
+// insert new product variant
+const insertVariantProduct = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params
 
+        const newVariant = {
+            name: req.body.name,
+            size: req.body.size,
+            quantity: req.body.quantity,
+            screen: req.body.screen,
+            price: req.body.price
+          };
+          
+        // Define the update object
+        const update = {
+            $push: {
+                variants: newVariant
+            }
+        };
+          
+          // Update the product by adding the new variant
+        Product.findOneAndUpdate({ "_id": id }, update, { new: true })
+        .then(updatedProduct => {
+            res.status(200).json(updatedProduct)
+        })
+        .catch(error => {
+            console.error("Error adding variant:", error);
+        });
+    } catch (error) {
+        res.status(500)
+        throw new Error(error.message)
+    }
+})
 
+// update product variants
+const updateVariant = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const updateVariant = {
+            "variants.$.name": req.body.name,
+            "variants.$.size": req.body.size,
+            "variants.$.quantity": req.body.quantity,
+            "variants.$.screen": req.body.screen,
+            "variants.$.price": req.body.price,
+            updatedAt: new Date()
+          };
+
+        Product.findOneAndUpdate({ "variants._id": id }, updateVariant, { new: true })
+        .then(updatedProduct => {
+            console.log("Variant updated successfully:", updatedProduct);
+        })
+        .catch(error => {
+            console.error("Error updating variant:", error);
+        });
+
+        const updatedProduct1 = await Product.find({ "variants._id": id });
+        res.status(200).json(updatedProduct1)
+    } catch (error) {
+        res.status(500)
+        throw new Error(error.message)
+    }
+})
+
+// delete product variants
+const deleteVariant = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const filter = {
+            "variants._id": id
+        };
+
+        // Define the update object
+        const update = {
+            $pull: {
+                variants: { _id: id }
+            }
+        };
+
+        // Update the product by deleting the variant
+        Product.findOneAndUpdate(filter, update, { new: true })
+            .then(updatedProduct => {
+                res.status(200).json(updatedProduct)
+            })
+            .catch(error => {
+                console.error("Error deleting variant:", error);
+            });
+    } catch (error) {
+        res.status(500)
+        throw new Error(error.message)
+    }
+})
+// upload images
 const uploadImage = asyncHandler(async (req, res) => {
     upload.single("avatar")(req, res, async (err) => {
         if (err) {
@@ -150,4 +242,7 @@ module.exports = {
     insertProduct,
     uploadImage,
     getImage,
+    updateVariant,
+    deleteVariant,
+    insertVariantProduct
 }
