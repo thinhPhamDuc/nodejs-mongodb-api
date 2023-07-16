@@ -15,10 +15,10 @@ app.use(cors())
 //router
 //user routes
 app.use('/api', clientRoutes)
-app.use('/api', authenticateToken ,checkoutRoutes)
+app.use('/api/admin', userRoutes)
 
 //admin routes
-app.use('/api/admin', userRoutes)
+app.use('/api', authenticateToken ,checkoutRoutes)
 app.use('/api/admin/product', authenticateToken, productRoutes);
 
 app.get('/', (req, res) => {
