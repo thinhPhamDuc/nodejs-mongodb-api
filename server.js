@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoute')
 const clientRoutes = require('./routes/clientRoute')
 const checkoutRoutes = require('./routes/checkoutRoute')
 const urlRoutes = require('./routes/urlRoute')
+const scrapeRoute = require('./routes/scrapeRoute')
 const errorMiddleware = require('./middleware/errorMiddleware')
 const authenticateToken = require('./middleware/authMiddleware')
 const cors = require('cors')
@@ -17,6 +18,7 @@ app.use(cors())
 //user routes
 app.use('/api', clientRoutes)
 app.use('/api', urlRoutes)
+app.use('/api', scrapeRoute)
 app.use('/api/admin', userRoutes)
 
 //admin routes
