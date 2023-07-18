@@ -30,7 +30,9 @@ const getProducts = asyncHandler(async (req, res) => {
         const product = await Product.find()
             .skip(pageOptions.page * pageOptions.limit)
             .limit(pageOptions.limit)
-        res.status(200).json(product)
+        const currentPage = req.query.page
+        const total = await Product.count()
+        res.status(200).json({ product,total,currentPage })
     } catch (error) {
         res.status(500)
         throw new Error(error.message)
